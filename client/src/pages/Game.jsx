@@ -9,15 +9,14 @@ export default function Game() {
 
   const gridSize = 20;
 
-  // ✅ Persistent game state
+  // Persistent game state
   const snake = useRef([{ x: 10, y: 10 }]);
   const direction = useRef({ x: 1, y: 0 });
   const food = useRef({ x: 5, y: 5 });
 
-  // ✅ FIX: define BEFORE useEffect (no hoisting error)
   const sendScore = async (finalScore) => {
     try {
-      await API.post("/scores", { score: finalScore });
+      await API.post("/score", { score: finalScore });
       console.log("Score saved");
     } catch (err) {
       console.error(err);
@@ -45,8 +44,17 @@ export default function Game() {
         newHead.y >= canvas.height / gridSize
       ) {
         setGameOver(true);
-        sendScore(score); // ✅ now safe
+        sendScore(score);
         return;
+      }
+
+      // ❌ Self collision
+      for (let i = 0; i < snake.current.length; i++) {
+        if (newHead.x === snake.current[i].x && newHead.y === snake.current[i].y) {
+          setGameOver(true);
+          sendScore(score);
+          return;
+        }
       }
 
       snake.current.unshift(newHead);
@@ -67,67 +75,95 @@ export default function Game() {
       }
 
       // 🎨 Draw
-      ctx.fillStyle = "black";
+      ctx.fillStyle = "#000000"; // Black background
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "green";
-      snake.current.forEach((s) => {
+      // Draw Snake
+      snake.current.forEach((s, index) => {
+        ctx.fillStyle = index === 0 ? "#00ff87" : "#00cc6a"; // Neon green head, slightly darker body
         ctx.fillRect(
           s.x * gridSize,
           s.y * gridSize,
-          gridSize,
-          gridSize
+          gridSize - 1, // small gap between segments
+          gridSize - 1
         );
       });
 
-      ctx.fillStyle = "red";
-      ctx.fillRect(
-        food.current.x * gridSize,
-        food.current.y * gridSize,
-        gridSize,
-        gridSize
+      // Draw Food
+      ctx.fillStyle = "#ef4444"; // Red
+      ctx.beginPath();
+      ctx.arc(
+        food.current.x * gridSize + gridSize / 2,
+        food.current.y * gridSize + gridSize / 2,
+        gridSize / 2 - 2, // slightly smaller than grid
+        0,
+        2 * Math.PI
       );
-    }, 150);
+      ctx.fill();
+
+    }, 120); // Slightly faster for better feel
 
     return () => clearInterval(gameLoop);
-  }, [gameOver]); // ✅ no multiple intervals
+  }, [gameOver, score]);
 
   // 🎮 Controls
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.key === "ArrowUp") direction.current = { x: 0, y: -1 };
-      if (e.key === "ArrowDown") direction.current = { x: 0, y: 1 };
-      if (e.key === "ArrowLeft") direction.current = { x: -1, y: 0 };
-      if (e.key === "ArrowRight") direction.current = { x: 1, y: 0 };
+      // Prevent scrolling with arrows
+      if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+          e.preventDefault();
+      }
+      
+      if (e.key === "ArrowUp" && direction.current.y !== 1) direction.current = { x: 0, y: -1 };
+      if (e.key === "ArrowDown" && direction.current.y !== -1) direction.current = { x: 0, y: 1 };
+      if (e.key === "ArrowLeft" && direction.current.x !== 1) direction.current = { x: -1, y: 0 };
+      if (e.key === "ArrowRight" && direction.current.x !== -1) direction.current = { x: 1, y: 0 };
     };
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
 
-  const restart = () => {
-    window.location.reload();
+  const resetGame = () => {
+    snake.current = [{ x: 10, y: 10 }];
+    direction.current = { x: 1, y: 0 };
+    food.current = { 
+      x: Math.floor(Math.random() * (400 / gridSize)), 
+      y: Math.floor(Math.random() * (400 / gridSize)) 
+    };
+    setScore(0);
+    setGameOver(false);
   };
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h2>Snake Game</h2>
+    <div className="card game-card">
+      <div className="score-display">
+        Score: <span className="score-value">{score}</span>
+      </div>
 
-      <canvas
-        ref={canvasRef}
-        width={400}
-        height={400}
-        style={{ border: "2px solid white" }}
-      />
+      <div className="canvas-container">
+        <canvas
+          ref={canvasRef}
+          width={400}
+          height={400}
+        />
 
-      <p>Score: {score}</p>
-
-      {gameOver && (
-        <div>
-          <h3>Game Over</h3>
-          <button onClick={restart}>Restart</button>
-        </div>
-      )}
+        {gameOver && (
+          <div className="game-overlay">
+            <h3 className="game-over-title">Game Over</h3>
+            <div className="final-score">
+              Final Score: <span>{score}</span>
+            </div>
+            <button onClick={resetGame} style={{ marginTop: '1rem' }}>
+              Play Again
+            </button>
+          </div>
+        )}
+      </div>
+      
+      <p className="text-muted" style={{ marginTop: '1.5rem', fontSize: '0.85rem' }}>
+        Use Arrow Keys to move
+      </p>
     </div>
   );
 }
