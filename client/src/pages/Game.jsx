@@ -9,7 +9,7 @@ export default function Game() {
 
   const sendScore = async (finalScore) => {
     try {
-      await API.post("/score", { score: finalScore });
+      await API.post("score", { score: finalScore });
       console.log("Score saved");
     } catch (err) {
       console.error(err);

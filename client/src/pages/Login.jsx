@@ -16,7 +16,7 @@ export default function Login() {
     setMessage({ text: "", type: "" });
 
     try {
-      const endpoint = isLogin ? "/auth/login" : "/auth/register";
+      const endpoint = isLogin ? "auth/login" : "auth/register";
       const { data } = await API.post(endpoint, { email, password });
       
       setMessage({ 

@@ -8,7 +8,7 @@ export default function Leaderboard() {
   const fetchLeaderboard = async () => {
     setLoading(true);
     try {
-      const res = await API.get("/leaderboard");
+      const res = await API.get("leaderboard");
       setData(res.data || []);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
