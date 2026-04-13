@@ -29,11 +29,10 @@ export default function Leaderboard() {
   };
 
   return (
-    <div className="card">
-      <div className="leaderboard-header">
-        <h2>Top Players</h2>
+    <div className="score-summary">
+      <div className="topbar">
+        <h2 className="auth-form-title">Top Players</h2>
         <button 
-          className="refresh-btn" 
           onClick={fetchLeaderboard}
           disabled={loading}
         >
@@ -41,35 +40,28 @@ export default function Leaderboard() {
         </button>
       </div>
 
-      {loading && data.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "2rem" }}>
-          <span className="spinner"></span>
-        </div>
-      ) : data.length > 0 ? (
-        <div className="leaderboard-list">
-          {data.map((user) => (
-            <div 
-              key={user.rank || user.email} 
-              className={`leaderboard-item rank-${user.rank}`}
-            >
-              <div className="rank-info">
-                <span className="rank">
-                  {getRankMedal(user.rank)}
-                </span>
-                <span className="player-email">
-                  {user.email.split('@')[0]}
-                  {/* Just showing the first part of email for privacy/cleanliness in game UI */}
-                </span>
+      <div className="status-row">
+        {loading && data.length === 0 ? (
+          <p className="hint">Loading...</p>
+        ) : data.length > 0 ? (
+          <>
+            {data.map((user) => (
+              <div key={user.rank || user.email} className="topbar">
+                <div>
+                  <strong>{getRankMedal(user.rank)}</strong>
+                  <p className="hint">{user.email.split('@')[0]}</p>
+                </div>
+                
+                <strong>{user.highScore.toLocaleString()}</strong>
               </div>
-              <span className="player-score">{user.highScore.toLocaleString()}</span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="empty-state">
-          No scores yet. Be the first!
-        </div>
-      )}
+            ))}
+          </>
+        ) : (
+          <p className="hint">
+            No scores yet. Be the first!
+          </p>
+        )}
+      </div>
     </div>
   );
 }

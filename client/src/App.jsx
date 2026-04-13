@@ -2,34 +2,40 @@ import { useAuth } from "./context/AuthContext";
 import Login from "./pages/Login";
 import Leaderboard from "./components/Leaderboard";
 import Game from "./pages/Game";
-import "./App.css";
 
 function App() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="app-container">
-      <header className="header">
-        <h1>Katre THe BUSSS__..</h1>
-        {user && (
-          <div className="user-controls">
-            <span className="text-muted">Logged in as: <span className="text-primary">{user.email}</span></span>
-            <button className="logout-btn" onClick={logout}>
-              Logout
-            </button>
+    <div className="app">
+      <div className="panel">
+        <header className="topbar">
+          <div>
+            <h1>Katre THe BUSSS_..</h1>
+            <p className="eyebrow">
+              {user ? `Logged in as: ${user.email}` : "Please log in"}
+            </p>
           </div>
-        )}
-      </header>
+          {user && (
+            <div className="actions">
+              <button onClick={logout}>Logout</button>
+            </div>
+          )}
+        </header>
 
-      <main className="main-content">
-        <section className="left-column">
-          {!user ? <Login /> : <Game />}
-        </section>
-        
-        <section className="right-column">
-          <Leaderboard />
-        </section>
-      </main>
+        {/* Adding an empty element here as spacing if needed could be done, but we'll let CSS gaps or standard margins handle layout naturally */}
+        <br />
+
+        <main className="layout">
+          <section className="game-area">
+            {!user ? <Login /> : <Game />}
+          </section>
+          
+          <aside className="sidebar">
+            <Leaderboard />
+          </aside>
+        </main>
+      </div>
     </div>
   );
 }
