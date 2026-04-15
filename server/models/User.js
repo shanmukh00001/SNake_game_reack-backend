@@ -1,17 +1,27 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(//Defines the structure of documents in MongoDB
+const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    password: {
+    name: {
       type: String,
-      required: true,
+    },
+    picture: {
+      type: String,
+    },
+    provider: {
+      type: String,
+      default: "google",
     },
     highScore: {
+      type: Number,
+      default: 0,
+    },
+    nameChangeCount: {
       type: Number,
       default: 0,
     },

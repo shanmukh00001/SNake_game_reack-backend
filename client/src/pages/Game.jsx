@@ -1,13 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import API from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import { createInitialState, stepGame, GRID_SIZE, TICK_MS } from "../gameLogic";
 
 export default function Game() {
+  const { user } = useAuth();
   const [gameState, setGameState] = useState(() => createInitialState());
   const requestedDirRef = useRef(gameState.direction);
   const hasSubmittedScore = useRef(false);
 
+  const isGuest = user?.isGuest;
+
   const sendScore = async (finalScore) => {
+    if (isGuest) {
+      // For guests, we save high score locally for the session
+      const currentGuestBest = parseInt(localStorage.getItem("guest_highscore") || "0");
+      if (finalScore > currentGuestBest) {
+        localStorage.setItem("guest_highscore", finalScore.toString());
+      }
+      console.log("Guest score handled locally");
+      return;
+    }
+
     try {
       await API.post("score", { score: finalScore });
       console.log("Score saved");
@@ -35,7 +49,7 @@ export default function Game() {
     }, TICK_MS);
 
     return () => clearInterval(gameLoop);
-  }, []);
+  }, [isGuest]); // Re-run if guest status changes unexpectedly
 
   const handleManualDirection = (reqDir) => {
     if (gameState.status === "ready") {
@@ -87,20 +101,32 @@ export default function Game() {
     }
   }
 
+  const guestHighScore = localStorage.getItem("guest_highscore") || "0";
+
   return (
     <>
       <div className="status-row">
         <div className="scorecard">
           <p className="scorecard-label">CURRENT SCORE</p>
           <strong>{gameState.score}</strong>
+          {isGuest && (
+            <div className="guest-best">
+              <span className="tiny-label">LOCAL BEST:</span> {guestHighScore}
+            </div>
+          )}
         </div>
         <div>
-          <p id="status">
+          <div id="status">
             {gameState.status === 'ready' && "Press a direction key or arrow to begin."}
-            {gameState.status === 'gameover' && "Game Over! Try again."}
+            {gameState.status === 'gameover' && (
+              <div className="game-over-msg">
+                <span>Game Over!</span>
+                {isGuest && <p className="sign-in-prompt">Sign in to save your score to the leaderboard!</p>}
+              </div>
+            )}
             {gameState.status === 'won' && "You win!"}
             {gameState.status === 'running' && "Good luck..."}
-          </p>
+          </div>
           {(gameState.status === "gameover" || gameState.status === "won") && (
             <div className="actions">
               <button onClick={resetGame}>

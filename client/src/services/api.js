@@ -2,13 +2,21 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: (() => {
-    let url = import.meta.env.VITE_API_URL || "";
-    console.log(import.meta.env.VITE_API_URL);
-    if (!url.includes("/api")) {
-      url = url.endsWith("/") ? `${url}api` : `${url}/api`;
-      
+    // 1. Get base URL from environment (Vite picks .env.local for dev, .env.production for production)
+    const rawUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    
+    // 2. Normalize: Remove trailing slash if provided in ENV
+    let url = rawUrl.endsWith("/") ? rawUrl.slice(0, -1) : rawUrl;
+    
+    // 3. Ensure /api suffix exists exactly once (requirement)
+    if (!url.endsWith("/api")) {
+      url = `${url}/api`;
     }
-    return url.endsWith("/") ? url : `${url}/`;
+    
+    // 4. Verification log
+    console.log(`🚀 [API Service]: Target Backend -> ${url}`);
+    
+    return `${url}/`;
   })(),
 });
 

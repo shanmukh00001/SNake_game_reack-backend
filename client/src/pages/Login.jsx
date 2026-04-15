@@ -1,26 +1,24 @@
 import { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../context/AuthContext";
 import API from "../services/api";
 
 export default function Login() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, loginAsGuest } = useAuth();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleGoogleSuccess = async (credentialResponse) => {
     setLoading(true);
     setMessage({ text: "", type: "" });
 
     try {
-      const endpoint = isLogin ? "auth/login" : "auth/register";
-      const { data } = await API.post(endpoint, { email, password });
+      const { data } = await API.post("auth/google", { 
+        token: credentialResponse.credential 
+      });
       
       setMessage({ 
-        text: isLogin ? "Login successful!" : "Registration successful! Logging in...", 
+        text: "Login successful!", 
         type: "success" 
       });
 
@@ -31,12 +29,16 @@ export default function Login() {
     } catch (err) {
       console.log(err);
       setMessage({ 
-        text: err.response?.data?.error || "An error occurred", 
+        text: err.response?.data?.message || "Google Authentication failed", 
         type: "error" 
       });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleError = () => {
+    setMessage({ text: "Google Sign-In failed. Please try again.", type: "error" });
   };
 
   return (
@@ -45,63 +47,59 @@ export default function Login() {
         <div>
           <h2 className="auth-form-title">Welcome</h2>
           <p className="hint">
-            Sign in to conquer the leaderboard
+            Sign in with Google to conquer the leaderboard
           </p>
         </div>
       </div>
 
-      <div className="auth-tabs">
-        <button 
-          className={`auth-tab ${isLogin ? 'active' : ''}`}
-          onClick={() => setIsLogin(true)}
-          type="button"
-        >
-          Sign In
-        </button>
-        <button 
-          className={`auth-tab ${!isLogin ? 'active' : ''}`}
-          onClick={() => setIsLogin(false)}
-          type="button"
-        >
-          Register
-        </button>
-      </div>
-
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <div className="field">
-          <label>Email Address</label>
-          <input 
-            type="email"
-            placeholder="you@example.com" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} 
-            required
+      <div className="google-auth-container" style={{ 
+        display: "flex", 
+        flexDirection: "column", 
+        alignItems: "center", 
+        gap: "20px",
+        margin: "30px 0" 
+      }}>
+        {loading ? (
+          <p className="auth-state">Authenticating...</p>
+        ) : (
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            useOneTap
+            theme="filled_black"
+            shape="pill"
           />
-        </div>
-        
-        <div className="field">
-          <label>Password</label>
-          <input 
-            type="password" 
-            placeholder="••••••••" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} 
-            required
-          />
-        </div>
-
-        {message.text && (
-          <p className="auth-state" style={{ color: message.type === 'error' ? 'var(--food)' : 'var(--snake)' }}>
-            {message.text}
-          </p>
         )}
-        
-        <div className="auth-actions" style={{ marginTop: "8px" }}>
-          <button id="primary-auth-button" type="submit" disabled={loading}>
-            {loading ? "..." : (isLogin ? "Sign In" : "Create Account")}
-          </button>
-        </div>
-      </form>
+      </div>
+
+      {message.text && (
+        <p className="auth-state" style={{ 
+          textAlign: "center",
+          color: message.type === 'error' ? 'var(--food)' : 'var(--snake)' 
+        }}>
+          {message.text}
+        </p>
+      )}
+
+      <div className="auth-divider">
+        <span>or</span>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "8px" }}>
+        <button
+          id="play-as-guest-btn"
+          className="guest-btn"
+          onClick={loginAsGuest}
+        >
+          🎮 Play as Guest
+        </button>
+      </div>
+
+      <div className="auth-footer" style={{ textAlign: "center", marginTop: "16px" }}>
+        <p className="hint" style={{ fontSize: "0.8rem" }}>
+          Sign in to save your high score to the leaderboard.
+        </p>
+      </div>
     </div>
   );
 }

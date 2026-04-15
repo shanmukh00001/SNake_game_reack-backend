@@ -10,9 +10,9 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("user"));
-      if (stored?.token) {
+      if (stored?.token || stored?.isGuest) {
         setUser(stored);
-        setToken(stored.token);
+        setToken(stored.token || null);
       }
     } catch {
       localStorage.removeItem("user");
@@ -26,6 +26,14 @@ export function AuthProvider({ children }) {
     setToken(data.token);
   };
 
+  // Login as Guest: persists a guest object in localStorage
+  const loginAsGuest = () => {
+    const guestData = { name: "Guest", isGuest: true };
+    localStorage.setItem("user", JSON.stringify(guestData));
+    setUser(guestData);
+    setToken(null);
+  };
+
   // Logout: clears storage and state
   const logout = () => {
     localStorage.removeItem("user");
@@ -33,8 +41,15 @@ export function AuthProvider({ children }) {
     setToken(null);
   };
 
+  // Update user data (e.g. after name change)
+  const updateUser = (newData) => {
+    const updated = { ...user, ...newData };
+    localStorage.setItem("user", JSON.stringify(updated));
+    setUser(updated);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, loginAsGuest, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

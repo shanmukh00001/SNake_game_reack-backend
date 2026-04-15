@@ -29,18 +29,25 @@ export const saveScore = async (req, res) => {
 export const getLeaderboard = async (req, res) => {
   try {
     const users = await User.find({})
-      .select("email highScore")
+      .select("name email picture highScore")
       .sort({ highScore: -1 })
-      .limit(10);
+      .limit(3);
 
-    const leaderboard = users.map((user, index) => ({
-      rank: index + 1,
-      email: user.email,
-      highScore: user.highScore,
-    }));
+    const leaderboard = users.map((user, index) => {
+      // Safely extract a display name
+      const displayName = user.name || (user.email ? user.email.split("@")[0] : "Hidden User");
+      
+      return {
+        rank: index + 1,
+        name: displayName,
+        picture: user.picture || null,
+        highScore: user.highScore || 0,
+      };
+    });
 
     res.json(leaderboard);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("LEADERBOARD ERROR:", error);
+    res.status(500).json({ message: "Failed to fetch leaderboard", error: error.message });
   }
 };

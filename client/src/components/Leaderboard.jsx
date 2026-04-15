@@ -46,13 +46,13 @@ export default function Leaderboard() {
         ) : data.length > 0 ? (
           <>
             {data.map((user) => (
-              <div key={user.rank || user.email} className="topbar">
-                <div>
-                  <strong>{getRankMedal(user.rank)}</strong>
-                  <p className="hint">{user.email.split('@')[0]}</p>
+              <div key={user.rank || user.name} className="leaderboard-item">
+                <div className="rank-info">
+                  <span className="rank">{getRankMedal(user.rank)}</span>
+                  <span className="player-name">{user.name}</span>
                 </div>
                 
-                <strong>{user.highScore.toLocaleString()}</strong>
+                <span className="player-score">{user.highScore.toLocaleString()}</span>
               </div>
             ))}
           </>
