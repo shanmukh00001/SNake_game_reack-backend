@@ -28,7 +28,7 @@ function App() {
       <div className="panel">
         <header className="topbar">
           <div>
-            <h1>Katre THe BUSSS_..</h1>
+            <h1>SNAKE</h1>
             <div className="user-profile">
               <div className="name-container">
                 <p className="eyebrow">
