@@ -29,9 +29,9 @@ export const saveScore = async (req, res) => {
 export const getLeaderboard = async (req, res) => {
   try {
     const users = await User.find({})
-      .select("name email picture highScore")
       .sort({ highScore: -1 })
-      .limit(3);
+      .limit(3)
+      .lean();
 
     const leaderboard = users.map((user, index) => {
       // Safely extract a display name

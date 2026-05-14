@@ -107,3 +107,25 @@ export const updateName = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Get current user profile
+// @route   GET /api/auth/me
+// @access  Private
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).lean();
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      picture: user.picture,
+      highScore: user.highScore,
+      nameChangeCount: user.nameChangeCount,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

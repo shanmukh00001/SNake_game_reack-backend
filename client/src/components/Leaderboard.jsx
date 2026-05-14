@@ -30,34 +30,35 @@ export default function Leaderboard() {
 
   return (
     <div className="score-summary">
-      <div className="topbar">
+      <div className="leaderboard-header">
         <h2 className="auth-form-title">Top Players</h2>
         <button 
+          className="refresh-btn"
           onClick={fetchLeaderboard}
           disabled={loading}
         >
-          {loading ? "..." : "Refresh"}
+          {loading ? <span className="spinner"></span> : "Refresh"}
         </button>
       </div>
 
-      <div className="status-row">
+      <div className="leaderboard-list">
         {loading && data.length === 0 ? (
-          <p className="hint">Loading...</p>
+          <p className="empty-state">Loading scores...</p>
         ) : data.length > 0 ? (
           <>
             {data.map((user) => (
-              <div key={user.rank || user.name} className="leaderboard-item">
+              <div key={user.rank || user.name} className={`leaderboard-item rank-${user.rank}`}>
                 <div className="rank-info">
                   <span className="rank">{getRankMedal(user.rank)}</span>
                   <span className="player-name">{user.name}</span>
                 </div>
                 
-                <span className="player-score">{user.highScore.toLocaleString()}</span>
+                <span className="player-score">{(user.highScore || 0).toLocaleString()}</span>
               </div>
             ))}
           </>
         ) : (
-          <p className="hint">
+          <p className="empty-state">
             No scores yet. Be the first!
           </p>
         )}

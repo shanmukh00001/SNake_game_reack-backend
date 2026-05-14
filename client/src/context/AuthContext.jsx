@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import API from "../services/api";
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -8,11 +9,25 @@ export function AuthProvider({ children }) {
 
   // Initialize from localStorage on mount (preserves session across refresh)
   useEffect(() => {
+    const syncUser = async (token) => {
+      try {
+        const { data } = await API.get("auth/me");
+        // Maintain the token in the user object
+        updateUser({ ...data, token });
+      } catch (err) {
+        console.error("Failed to sync user data:", err);
+      }
+    };
+
     try {
       const stored = JSON.parse(localStorage.getItem("user"));
       if (stored?.token || stored?.isGuest) {
         setUser(stored);
         setToken(stored.token || null);
+        
+        if (stored.token) {
+          syncUser(stored.token);
+        }
       }
     } catch {
       localStorage.removeItem("user");
@@ -43,9 +58,11 @@ export function AuthProvider({ children }) {
 
   // Update user data (e.g. after name change)
   const updateUser = (newData) => {
-    const updated = { ...user, ...newData };
-    localStorage.setItem("user", JSON.stringify(updated));
-    setUser(updated);
+    setUser(prev => {
+      const updated = { ...prev, ...newData };
+      localStorage.setItem("user", JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
@@ -63,4 +80,3 @@ export function useAuth() {
   return context;
 }
 
-export default AuthContext;

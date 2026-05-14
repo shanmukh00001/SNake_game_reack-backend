@@ -373,3 +373,50 @@ button[hidden] {
     align-items: stretch;
   }
 }
+
+.personal-best {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #090909; /* Gold color */
+  font-weight: bold;
+  margin-top: 4px;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 4px rgba(212, 175, 55, 0.1);
+  }
+  to {
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+  }
+}
+
+.tiny-label {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.personal-best-modal {
+  background: rgba(212, 175, 55, 0.1);
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  margin-top: 12px;
+  display: inline-block;
+}
+
+.personal-best-header {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: #d4af37;
+  font-weight: 500;
+}
+
+.personal-best-header strong {
+  font-weight: 700;
+}

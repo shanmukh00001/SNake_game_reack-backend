@@ -22,6 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 // Relaxed CORS for development
 const allowedOrigins = [
   "http://localhost:5173",
@@ -57,6 +58,15 @@ app.use("/api", apiSlowDown);
 app.use("/api/auth", authRoutes);
 app.use("/api", scoreRoutes);
 
+// Root route for API status
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Snake Game API is running successfully"
+  });
+});
+
+
 // Error Handling Middlewares
 app.use(notFound);
 app.use(errorHandler);
@@ -66,10 +76,6 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-// Test route
-app.get("/", (req, res) => {
-  res.send("Server is running");
-});
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)

@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { createInitialState, stepGame, GRID_SIZE, TICK_MS } from "../gameLogic";
 
 export default function Game() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [gameState, setGameState] = useState(() => createInitialState());
   const requestedDirRef = useRef(gameState.direction);
   const hasSubmittedScore = useRef(false);
@@ -23,8 +23,13 @@ export default function Game() {
     }
 
     try {
-      await API.post("score", { score: finalScore });
-      console.log("Score saved");
+      const { data } = await API.post("score", { score: finalScore });
+      console.log("Score saved:", data);
+      
+      // Update local user state with new high score if returned
+      if (data.highScore !== undefined) {
+        updateUser({ highScore: data.highScore });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -109,9 +114,13 @@ export default function Game() {
         <div className="scorecard">
           <p className="scorecard-label">CURRENT SCORE</p>
           <strong>{gameState.score}</strong>
-          {isGuest && (
+          {isGuest ? (
             <div className="guest-best">
               <span className="tiny-label">LOCAL BEST:</span> {guestHighScore}
+            </div>
+          ) : (
+            <div className="personal-best">
+              <span className="tiny-label">🏆 Personal Best:</span> {user?.highScore || 0}
             </div>
           )}
         </div>
@@ -121,6 +130,11 @@ export default function Game() {
             {gameState.status === 'gameover' && (
               <div className="game-over-msg">
                 <span>Game Over!</span>
+                <div className="personal-best-modal">
+                  <span className="tiny-label">Final Score:</span> {gameState.score}
+                  <br />
+                  <span className="tiny-label">🏆 Personal Best:</span> {isGuest ? guestHighScore : (user?.highScore || 0)}
+                </div>
                 {isGuest && <p className="sign-in-prompt">Sign in to save your score to the leaderboard!</p>}
               </div>
             )}

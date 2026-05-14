@@ -34,10 +34,10 @@ export const scoreLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// 4. Global API Limiter (100 per hour)
+// 4. Global API Limiter (Increase for dev)
 export const apiLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 100,
+  max: process.env.NODE_ENV === "development" ? 10000 : 100,
   message: {
     message: "Too many requests from this IP, please try again after an hour",
   },
