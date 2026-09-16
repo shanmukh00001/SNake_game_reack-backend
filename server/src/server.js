@@ -79,6 +79,9 @@ app.use("/api", apiSlowDown);
 app.use("/api/auth", authRoutes);
 app.use("/api", scoreRoutes);
 
+// Handle browser favicon requests silently
+app.get("/favicon.ico", (_req, res) => res.status(204).end());
+
 // Root health check endpoint
 app.get("/", (_req, res) => {
   res.status(200).json({
