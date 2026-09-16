@@ -1,0 +1,12 @@
+﻿node_modules/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+dist/
+coverage/
+cssredisgn/
+docs/
+README.md
+snake_gameinterview_prep_guide
