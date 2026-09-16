@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"on-error":"#ffffff","primary-container":"#31543a","on-primary-container":"#a0c7a6","inverse-primary":"#a9d0af","on-secondary-fixed-variant":"#822618","secondary":"#a23d2c","surface-container-low":"#f1f5eb","on-primary-fixed":"#00210d","tertiary-fixed":"#c6ecc8","on-tertiary":"#ffffff","on-primary":"#ffffff","surface-dim":"#d7dcd2","secondary-container":"#fe826c","on-primary-fixed-variant":"#2b4e35","surface-container-lowest":"#ffffff","on-surface-variant":"#424842","background":"#f6fbf1","primary-fixed-dim":"#a9d0af","surface-variant":"#dfe4da","on-secondary-fixed":"#3f0300","secondary-fixed-dim":"#ffb4a6","on-tertiary-container":"#a2c7a4","surface-tint":"#43664b","surface-container-high":"#e5eae0","on-tertiary-fixed-variant":"#2d4e33","inverse-surface":"#2d322b","on-surface":"#181d17","primary":"#1a3d25","surface-container-highest":"#dfe4da","outline":"#727971","tertiary-fixed-dim":"#aad0ad","surface-container":"#ebefe6","on-error-container":"#93000a","on-tertiary-fixed":"#00210b","inverse-on-surface":"#eef2e8","error":"#ba1a1a","surface":"#f6fbf1","on-secondary":"#ffffff","outline-variant":"#c2c8c0","secondary-fixed":"#ffdad4","surface-bright":"#f6fbf1","error-container":"#ffdad6","tertiary":"#1c3d23","on-secondary-container":"#731b0e","primary-fixed":"#c4edca","tertiary-container":"#335439","on-background":"#181d17"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-md":"1rem","margin-desktop":"2.5rem","space-2xl":"3rem","space-lg":"1.5rem","space-sm":"0.5rem","gutter-desktop":"1.5rem","space-xl":"2rem","gutter":"1rem","margin":"1rem","space-xs":"0.25rem"},"fontFamily":{"label-lg":["Space Grotesk"],"headline-lg-mobile":["Space Grotesk"],"headline-md":["Space Grotesk"],"title-lg":["Space Grotesk"],"headline-xl-mobile":["Space Grotesk"],"tabular-stat":["Space Grotesk"],"body-md":["DM Sans"],"body-lg":["DM Sans"],"headline-lg":["Space Grotesk"],"label-md":["Space Grotesk"],"body-sm":["DM Sans"],"title-md":["DM Sans"],"headline-xl":["Space Grotesk"]},"fontSize":{"label-lg":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.04em","fontWeight":"500"}],"headline-lg-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-md":["1.5rem",{"lineHeight":"2rem","letterSpacing":"-0.01em","fontWeight":"500"}],"title-lg":["1.25rem",{"lineHeight":"1.75rem","fontWeight":"500"}],"headline-xl-mobile":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.02em","fontWeight":"600"}],"tabular-stat":["1.5rem",{"lineHeight":"1.5rem","letterSpacing":"-0.01em","fontWeight":"600"}],"body-md":["1rem",{"lineHeight":"1.5rem","fontWeight":"400"}],"body-lg":["1.125rem",{"lineHeight":"1.75rem","fontWeight":"400"}],"headline-lg":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.02em","fontWeight":"500"}],"label-md":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.06em","fontWeight":"500"}],"body-sm":["0.875rem",{"lineHeight":"1.25rem","fontWeight":"400"}],"title-md":["1.125rem",{"lineHeight":"1.625rem","fontWeight":"600"}],"headline-xl":["3.5rem",{"lineHeight":"4rem","letterSpacing":"-0.03em","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/60 shadow-[0_1px_6px_rgba(24,29,23,0.04)]"><div class="h-16 w-full px-margin-desktop flex items-center justify-between gap-gutter-desktop"><div class="flex items-center gap-space-md"><img alt="Snake Arcade Tactile Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WC_aCNXL0KESRv90KNZ6Bp_pai8DRODyHM4_DImUNL_LILA6nV8Vxq_teuoJ2zOq0TR-QYVQnNSficdfNMrk2TcSK3W8dqT7IJFOJ4gfUOk75xAdJPUP02hp_rZOXyEmTu7TOewGZNQpqKM6DiYWsH4nwnOuvYbYYIslqMTUGdAKRdEugA-IX6ws1pcg6w3_F5MkUxOfzgcuMU7asK0W4DX2xc5UPJO0FLwG69mNoqARoDZdwvq2IuohvP"/><div class="flex flex-col"><span class="font-label-lg text-label-lg tracking-widest text-on-surface uppercase">SNAKE ARCADE</span><span class="font-label-md text-label-md text-outline uppercase">EDITION 01 // TACTILE CANON</span></div></div><nav class="hidden lg:flex items-center h-full gap-space-sm" data-active-classes="text-primary border-b-2 border-primary-container bg-surface-container-high/40"><a aria-current="page" class="h-full flex items-center px-space-md font-label-lg transition-colors text-primary border-b-2 border-primary-container bg-surface-container-high/40" data-path="game" href="#">01. Game</a><a class="h-full flex items-center px-space-md font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/20 transition-colors" data-path="leaderboard" href="#">02. Leaderboard</a><a class="h-full flex items-center px-space-md font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/20 transition-colors" data-path="profile-and-stats" href="#">03. Profile &amp; Stats</a><a class="h-full flex items-center px-space-md font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/20 transition-colors" data-path="settings" href="#">04. Settings</a></nav><div class="flex items-center gap-space-md"><div class="hidden xl:flex items-center gap-space-md px-space-sm py-space-xs bg-surface-container-low rounded border border-outline-variant/40"><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span><span class="font-label-md text-label-md text-on-surface-variant">SYSTEM // 60.0 FPS</span></div><span class="text-outline-variant font-label-md">|</span><span class="font-label-md text-label-md text-outline">LATENCY // 14ms</span></div><button aria-label="Toggle sound" class="flex items-center justify-center w-8 h-8 rounded bg-surface-container-low border border-outline-variant/50 text-on-surface-variant hover:text-on-surface hover:bg-surface-container hover:border-outline transition-all" type="button"><span class="material-symbols-outlined text-[18px]">volume_up</span></button><div class="flex items-center gap-space-sm pl-space-sm border-l border-outline-variant/50"><img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHAMPBgflt4lnn-t2qnvtLru_oARAYODd_JBFDH5iwpTBsRRVRiJWGNSlnzTFsDEt0wxQbbldb6jgirZEYkFfSofbedpfmOTfn6EU8byGrRz2RN_DxUcxTfPuc3J5CoBPm5NwjTKdSdy4CioEftBYDGuvLBSu_dIjB83XnWP5terzCm-bkgM6ofcJ1Smx910-4_xk1pYpYHmaJ2pU_YUrxTX3kaRr_8A69Zt0UYKM9zEpHG4QIc49NUQ"/><div class="flex flex-col"><span class="font-label-md text-label-md text-on-surface leading-none">PixelRonin</span><span class="font-label-md text-label-md text-primary font-semibold leading-none mt-0.5">TOP TIER 4,820</span></div></div></div></div></header><main class="w-full pt-16 bg-background flex-1 flex flex-col"><div class="flex flex-col w-full">
+<div class="w-full max-w-[1520px] mx-auto px-gutter md:px-gutter-desktop py-space-md lg:py-space-lg flex flex-col gap-space-lg">
+<!-- TOP COMPACT TACTILE HUD -->
+<header class="w-full bg-surface-container-low rounded-xl p-space-md shadow-sm">
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+<!-- Primary Run Telemetry -->
+<div class="flex flex-wrap items-center gap-space-lg">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-pulse"></span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md tracking-wider text-outline uppercase">STATE</span>
+<span class="font-label-lg text-label-lg font-semibold text-primary" id="hud-status-text">LIVE SESSION</span>
+</div>
+</div>
+<div class="w-px h-8 bg-surface-variant hidden sm:block"></div>
+<!-- Current Score -->
+<div class="flex flex-col">
+<span class="font-label-md text-label-md tracking-wider text-outline uppercase">CURRENT RUN</span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-tabular-stat text-tabular-stat text-on-surface tracking-tight" id="hud-score">1,420</span>
+<span class="font-label-md text-label-md text-outline">PTS</span>
+</div>
+</div>
+<div class="w-px h-8 bg-surface-variant hidden sm:block"></div>
+<!-- Personal Best -->
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md tracking-wider text-outline uppercase">PERSONAL BEST</span>
+<span class="material-symbols-outlined text-[14px] text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-tabular-stat text-tabular-stat text-on-surface-variant font-medium">3,860</span>
+<span class="font-label-md text-label-md text-outline">HIGH</span>
+</div>
+</div>
+<div class="w-px h-8 bg-surface-variant hidden sm:block"></div>
+<!-- Speed Ramp Stepper -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between gap-space-sm">
+<span class="font-label-md text-label-md tracking-wider text-outline uppercase">SPEED RAMP</span>
+<span class="font-label-md text-label-md font-semibold text-primary-container" id="hud-speed-val">1.6×</span>
+</div>
+<div class="flex items-center gap-1">
+<div class="w-3 h-2 rounded bg-primary-container"></div>
+<div class="w-3 h-2 rounded bg-primary-container"></div>
+<div class="w-3 h-2 rounded bg-primary-container"></div>
+<div class="w-3 h-2 rounded bg-surface-variant"></div>
+<div class="w-3 h-2 rounded bg-surface-variant"></div>
+</div>
+</div>
+</div>
+<!-- Tactile Quick Actions & State Simulation Pills -->
+<div class="flex flex-wrap items-center gap-space-sm justify-between lg:justify-end">
+<!-- State Switcher Pills -->
+<div class="flex items-center p-1 bg-surface-container rounded-lg gap-0.5">
+<button class="state-pill px-space-sm py-0.5 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-state="ready" onclick="setGameState('ready')" type="button">Ready</button>
+<button class="state-pill px-space-sm py-0.5 rounded font-label-md text-label-md bg-surface-container-lowest text-primary font-semibold shadow-sm" data-state="playing" onclick="setGameState('playing')" type="button">Playing</button>
+<button class="state-pill px-space-sm py-0.5 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-state="paused" onclick="setGameState('paused')" type="button">Paused</button>
+<button class="state-pill px-space-sm py-0.5 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-state="gameover" onclick="setGameState('gameover')" type="button">Over</button>
+</div>
+<div class="w-px h-6 bg-surface-variant hidden sm:block"></div>
+<!-- Quick Action Buttons -->
+<div class="flex items-center gap-space-xs">
+<button class="h-9 px-space-sm rounded bg-surface-container hover:bg-surface-container-high active:translate-y-px text-on-surface flex items-center gap-1 transition-all" id="btn-pause-toggle" onclick="togglePause()" title="Pause [Space]" type="button">
+<span class="material-symbols-outlined text-[18px]" id="pause-icon">pause</span>
+<span class="font-label-md text-label-md hidden sm:inline">Pause</span>
+</button>
+<button class="h-9 px-space-sm rounded bg-surface-container hover:bg-surface-container-high active:translate-y-px text-on-surface flex items-center gap-1 transition-all" onclick="restartRun()" title="Restart [R]" type="button">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+<span class="font-label-md text-label-md hidden sm:inline">Reset</span>
+</button>
+<button class="h-9 w-9 rounded bg-surface-container hover:bg-surface-container-high active:translate-y-px text-on-surface flex items-center justify-center transition-all" id="btn-mute" onclick="toggleMute()" title="Synthesizer Mute" type="button">
+<span class="material-symbols-outlined text-[18px]" id="mute-icon">volume_up</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN INTERACTIVE WORKSPACE: 12-COLUMN GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT SIDEBAR: BOARD SETTINGS & RUN METRICS (COL 1-3) -->
+<aside class="lg:col-span-3 flex flex-col gap-space-md order-2 lg:order-1">
+<!-- Run Profile Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-label-md text-label-md text-outline tracking-wider uppercase">SESSION CARD</span>
+<span class="font-label-md text-label-md text-primary font-semibold">#RN-8492</span>
+</div>
+<div class="flex items-center gap-space-sm p-space-xs bg-surface-container-low rounded-lg">
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center text-on-primary font-headline-md text-headline-md font-bold">
+              18
+            </div>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md text-on-surface truncate">Architect Matrix</span>
+<span class="font-body-sm text-body-sm text-outline truncate">18 × 18 Tactile Cardstock</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-xs pt-space-xs">
+<div class="p-space-xs bg-surface-container-low rounded flex flex-col">
+<span class="font-label-md text-label-md text-outline">ELAPSED</span>
+<span class="font-tabular-stat text-tabular-stat text-on-surface" id="timer-val">01:48</span>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded flex flex-col">
+<span class="font-label-md text-label-md text-outline">PELLETS</span>
+<span class="font-tabular-stat text-tabular-stat text-on-surface" id="pellets-val">14</span>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded flex flex-col">
+<span class="font-label-md text-label-md text-outline">EFFICIENCY</span>
+<span class="font-tabular-stat text-tabular-stat text-on-surface">94.2%</span>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded flex flex-col">
+<span class="font-label-md text-label-md text-outline">MAX LENGTH</span>
+<span class="font-tabular-stat text-tabular-stat text-on-surface" id="length-val">17 SEG</span>
+</div>
+</div>
+</div>
+<!-- Tactile Control Directives -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<span class="font-label-md text-label-md text-outline tracking-wider uppercase">MECHANICAL INPUTS</span>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant font-body-sm">Steering</span>
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="px-1.5 py-0.5 bg-surface-container rounded text-on-surface font-semibold shadow-xs">W</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded text-on-surface font-semibold shadow-xs">A</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded text-on-surface font-semibold shadow-xs">S</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded text-on-surface font-semibold shadow-xs">D</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant font-body-sm">Alt Navigation</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">ARROWS ↑ ← ↓ →</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant font-body-sm">Halt / Resume</span>
+<span class="px-2 py-0.5 bg-surface-container rounded font-label-md text-label-md text-on-surface font-semibold shadow-xs">[SPACE]</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant font-body-sm">Re-zero Loop</span>
+<span class="px-2 py-0.5 bg-surface-container rounded font-label-md text-label-md text-on-surface font-semibold shadow-xs">[R]</span>
+</div>
+</div>
+</div>
+<!-- Material Sound Synthesis Control -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-outline tracking-wider uppercase">ANALOG SOUND FX</span>
+<span class="font-label-md text-label-md text-primary font-semibold" id="vol-display">65%</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-[18px] text-outline">volume_down</span>
+<input class="w-full accent-primary-container cursor-pointer bg-surface-container-high rounded-full h-1.5" id="sound-range" max="100" min="0" oninput="updateVolume(this.value)" type="range" value="65"/>
+<span class="material-symbols-outlined text-[18px] text-outline">volume_up</span>
+</div>
+<div class="flex justify-between items-center text-label-md text-outline pt-1">
+<span>KEYCLICK: CLACK</span>
+<span>OSC: PURE SINE</span>
+</div>
+</div>
+</aside>
+<!-- CENTER: PHYSICAL GAME BOARD (COL 4-9) DIRECTLY REPRODUCING INSPIRATION -->
+<main class="lg:col-span-6 flex flex-col items-center order-1 lg:order-2">
+<!-- Outer Tactile Board Framing: Generous warm cardstock enclosure with soft paper shadow -->
+<div class="relative w-full max-w-[620px] aspect-square bg-surface-container-low rounded-2xl p-space-sm sm:p-space-md shadow-md flex items-center justify-center">
+<!-- Inner Playfield Board Surface with tactile double boundary -->
+<div class="relative w-full h-full bg-surface-bright rounded-xl p-2 sm:p-3.5 shadow-inner flex flex-col">
+<!-- 18x18 Tactile Matrix Container matching image inspiration -->
+<div class="relative w-full h-full grid grid-cols-18 grid-rows-18 gap-[2px] sm:gap-[3px] p-0.5 bg-surface-container-highest/60 rounded-lg select-none touch-none" id="game-board-grid">
+<!-- Dynamically or statically generated 18x18 cells (324 cells) -->
+</div>
+<!-- OVERLAY CONTAINER: Driven by tactile state pill selectors -->
+<div class="absolute inset-0 m-2 sm:m-3.5 rounded-lg bg-inverse-surface/40 backdrop-blur-[2px] flex items-center justify-center transition-opacity duration-200 pointer-events-none opacity-0" id="board-overlay">
+<!-- State 1: READY / INITIATE -->
+<div class="hidden w-[85%] max-w-[380px] bg-surface-container-lowest rounded-xl p-space-lg shadow-xl text-center flex flex-col items-center gap-space-sm" id="modal-ready">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container mb-space-xs">
+<span class="material-symbols-outlined text-[28px]">sports_esports</span>
+</div>
+<span class="font-label-md text-label-md text-outline uppercase tracking-widest">TACTILE CANON // READY</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Initiate Session</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-[280px]">
+                  Direct the wooden entity across the unbleached cardstock matrix. Collect terracotta tokens.
+                </p>
+<div class="flex items-center gap-space-xs my-space-xs font-label-md text-label-md text-outline">
+<span class="px-2 py-1 bg-surface-container rounded text-on-surface font-semibold shadow-xs">SPACEBAR</span>
+<span>OR</span>
+<span class="px-2 py-1 bg-surface-container rounded text-on-surface font-semibold shadow-xs">ARROW KEYS</span>
+</div>
+<button class="w-full py-space-sm px-space-md bg-primary text-on-primary rounded font-label-lg text-label-lg font-semibold hover:bg-primary-container active:translate-y-px transition-all" onclick="setGameState('playing')" type="button">
+                  COMMENCE RUN
+                </button>
+</div>
+<!-- State 2: PAUSED -->
+<div class="hidden bg-surface-container-lowest rounded-xl px-space-lg py-space-md shadow-xl text-center flex flex-col items-center gap-space-xs" id="modal-paused">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface uppercase tracking-wider">GAME PAUSED</span>
+<span class="font-label-md text-label-md text-outline">PRESS [SPACE] TO CONTINUE RUN</span>
+<button class="mt-space-sm px-space-md py-1 bg-surface-container rounded font-label-md text-label-md text-on-surface hover:bg-surface-container-high" onclick="togglePause()" type="button">
+                  Resume Now
+                </button>
+</div>
+<!-- State 3: GAME OVER -->
+<div class="hidden w-[85%] max-w-[380px] bg-surface-container-lowest rounded-xl p-space-lg shadow-xl text-center flex flex-col items-center gap-space-sm" id="modal-gameover">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary mb-space-xs">
+<span class="material-symbols-outlined text-[26px]">grid_goldenratio</span>
+</div>
+<span class="font-label-md text-label-md text-secondary font-semibold uppercase tracking-widest">COLLISION DETECTED</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Run Terminated</h2>
+<div class="w-full bg-surface-container-low rounded-lg p-space-sm flex justify-around my-space-xs">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-outline">SCORE</span>
+<span class="font-tabular-stat text-tabular-stat text-on-surface">1,420</span>
+</div>
+<div class="w-px h-8 bg-surface-variant"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-outline">FOOD</span>
+<span class="font-tabular-stat text-tabular-stat text-on-surface">14</span>
+</div>
+<div class="w-px h-8 bg-surface-variant"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-outline">DURATION</span>
+<span class="font-tabular-stat text-tabular-stat text-on-surface">01:48</span>
+</div>
+</div>
+<div class="flex gap-space-sm w-full">
+<button class="flex-1 py-space-sm px-space-md bg-primary text-on-primary rounded font-label-lg text-label-lg font-semibold hover:bg-primary-container active:translate-y-px transition-all" onclick="restartRun()" type="button">
+                    TRY AGAIN
+                  </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Mobile Touchpad Controls (Visible on smaller screens below LG) -->
+<div class="mt-space-md flex lg:hidden flex-col items-center gap-space-xs">
+<div class="flex justify-center">
+<button class="w-14 h-12 rounded-lg bg-surface-container-high active:bg-primary-container active:text-on-primary text-on-surface flex items-center justify-center shadow-sm" onclick="queueDirection(0, -1)" type="button">
+<span class="material-symbols-outlined text-[24px]">keyboard_arrow_up</span>
+</button>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="w-14 h-12 rounded-lg bg-surface-container-high active:bg-primary-container active:text-on-primary text-on-surface flex items-center justify-center shadow-sm" onclick="queueDirection(-1, 0)" type="button">
+<span class="material-symbols-outlined text-[24px]">keyboard_arrow_left</span>
+</button>
+<button class="w-14 h-12 rounded-lg bg-surface-container-high active:bg-primary-container active:text-on-primary text-on-surface flex items-center justify-center shadow-sm" onclick="queueDirection(0, 1)" type="button">
+<span class="material-symbols-outlined text-[24px]">keyboard_arrow_down</span>
+</button>
+<button class="w-14 h-12 rounded-lg bg-surface-container-high active:bg-primary-container active:text-on-primary text-on-surface flex items-center justify-center shadow-sm" onclick="queueDirection(1, 0)" type="button">
+<span class="material-symbols-outlined text-[24px]">keyboard_arrow_right</span>
+</button>
+</div>
+</div>
+</main>
+<!-- RIGHT SIDEBAR: LEADERBOARD & CANON SYSTEM SPECS (COL 10-12) -->
+<aside class="lg:col-span-3 flex flex-col gap-space-md order-3">
+<!-- Tactical Hall of Records -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-label-md text-label-md text-outline tracking-wider uppercase">HALL OF RECORDS</span>
+<span class="font-label-md text-label-md text-on-surface-variant">EDITION 01</span>
+</div>
+<div class="flex flex-col gap-1">
+<!-- Rank 1 -->
+<div class="flex items-center justify-between p-space-xs rounded hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-md text-label-md font-bold text-secondary w-5">01</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">Kaelen_V</span>
+</div>
+<span class="font-tabular-stat text-tabular-stat text-on-surface text-[15px]">5,940</span>
+</div>
+<!-- Rank 2 -->
+<div class="flex items-center justify-between p-space-xs rounded hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-md text-label-md font-bold text-outline w-5">02</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">Soma_Grid</span>
+</div>
+<span class="font-tabular-stat text-tabular-stat text-on-surface text-[15px]">5,120</span>
+</div>
+<!-- Rank 3 -->
+<div class="flex items-center justify-between p-space-xs rounded hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-md text-label-md font-bold text-outline w-5">03</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">Elysian_0</span>
+</div>
+<span class="font-tabular-stat text-tabular-stat text-on-surface text-[15px]">4,890</span>
+</div>
+<!-- Rank 4 -->
+<div class="flex items-center justify-between p-space-xs rounded hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-md text-label-md font-bold text-outline w-5">04</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">TuringBite</span>
+</div>
+<span class="font-tabular-stat text-tabular-stat text-on-surface text-[15px]">4,330</span>
+</div>
+<!-- User High Rank (Highlighted) -->
+<div class="flex items-center justify-between p-space-xs rounded bg-surface-container-high/60 mt-1">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-md text-label-md font-bold text-primary w-5">08</span>
+<span class="font-body-sm text-body-sm font-semibold text-primary">PixelRonin (You)</span>
+</div>
+<span class="font-tabular-stat text-tabular-stat font-semibold text-primary text-[15px]">3,860</span>
+</div>
+</div>
+<button class="w-full py-1 mt-space-xs bg-surface-container-low hover:bg-surface-container rounded font-label-md text-label-md text-on-surface-variant transition-colors text-center" type="button">
+            View Worldwide Top 100 →
+          </button>
+</div>
+<!-- Engine Telemetry Readout -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<span class="font-label-md text-label-md text-outline tracking-wider uppercase">CORE SPECIFICATIONS</span>
+<div class="flex flex-col gap-1 font-body-sm text-body-sm">
+<div class="flex justify-between">
+<span class="text-outline">Board Architecture</span>
+<span class="font-label-md text-label-md text-on-surface">18×18 Precision Cell</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Cell Separation</span>
+<span class="font-label-md text-label-md text-on-surface">3.0px Recessed Trench</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Renderer Engine</span>
+<span class="font-label-md text-label-md text-on-surface">DOM / Tactile Tile Mesh</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Sampling Rate</span>
+<span class="font-label-md text-label-md text-primary">120Hz Loop Tick</span>
+</div>
+</div>
+</div>
+<!-- System Palette Swatches Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<span class="font-label-md text-label-md text-outline tracking-wider uppercase">TACTILE PALETTE SYSTEM</span>
+<div class="grid grid-cols-4 gap-2 pt-1">
+<div class="flex flex-col items-center gap-1">
+<div class="w-full h-7 rounded bg-surface-bright shadow-inner"></div>
+<span class="font-label-md text-[10px] text-outline">IVORY</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-full h-7 rounded bg-primary-container"></div>
+<span class="font-label-md text-[10px] text-outline">FOREST</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-full h-7 rounded bg-primary"></div>
+<span class="font-label-md text-[10px] text-outline">DEEP</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-full h-7 rounded bg-secondary"></div>
+<span class="font-label-md text-[10px] text-outline">CLAY</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- LOWER SECTION: HISTORICAL RUN BREAKDOWNS & TACTILE COMPONENT METRICS -->
+<section class="w-full bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md mt-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-xs">
+<div>
+<span class="font-label-md text-label-md text-outline uppercase tracking-wider">RUN LOGBOOK</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Recent Tactile Iterations</h3>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="font-label-md text-label-md text-outline">FILTER:</span>
+<span class="px-space-sm py-0.5 bg-surface-container rounded font-label-md text-label-md text-on-surface font-semibold">ALL RUNS</span>
+<span class="px-space-sm py-0.5 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface cursor-pointer">COMPETITIVE</span>
+</div>
+</div>
+<!-- Bento Metric Strip -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-space-md">
+<!-- Metric 1 -->
+<div class="p-space-md bg-surface-container-low rounded-lg flex flex-col justify-between gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-outline uppercase">AGGREGATE RUNS</span>
+<span class="material-symbols-outlined text-[18px] text-outline">query_builder</span>
+</div>
+<span class="font-tabular-stat text-tabular-stat text-on-surface">342 SESSIONS</span>
+<div class="w-full bg-surface-variant h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[78%]"></div>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="p-space-md bg-surface-container-low rounded-lg flex flex-col justify-between gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-outline uppercase">FOOD HARVEST RATE</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">lunch_dining</span>
+</div>
+<span class="font-tabular-stat text-tabular-stat text-on-surface">4,812 PELLETS</span>
+<span class="font-body-sm text-body-sm text-outline">+128 this morning</span>
+</div>
+<!-- Metric 3 -->
+<div class="p-space-md bg-surface-container-low rounded-lg flex flex-col justify-between gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-outline uppercase">AVERAGE LIFESPAN</span>
+<span class="material-symbols-outlined text-[18px] text-outline">timelapse</span>
+</div>
+<span class="font-tabular-stat text-tabular-stat text-on-surface">03:12 MIN</span>
+<span class="font-body-sm text-body-sm text-primary font-medium">Top 5% endurance tier</span>
+</div>
+<!-- Metric 4 -->
+<div class="p-space-md bg-surface-container-low rounded-lg flex flex-col justify-between gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-outline uppercase">TACTILE FEEDBACK</span>
+<span class="material-symbols-outlined text-[18px] text-primary">sensors</span>
+</div>
+<span class="font-tabular-stat text-tabular-stat text-on-surface">CALIBRATED</span>
+<span class="font-body-sm text-body-sm text-outline">Response 14ms analog</span>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  // TACTILE ENGINE STATE MACHINE & MATRIX RENDERER
+  const GRID_SIZE = 18;
+  const boardGrid = document.getElementById('game-board-grid');
+  const boardOverlay = document.getElementById('board-overlay');
+  const modalReady = document.getElementById('modal-ready');
+  const modalPaused = document.getElementById('modal-paused');
+  const modalGameOver = document.getElementById('modal-gameover');
+  const hudScore = document.getElementById('hud-score');
+  const hudStatus = document.getElementById('hud-status-text');
+  const pelletsVal = document.getElementById('pellets-val');
+  const lengthVal = document.getElementById('length-val');
+
+  // Snake State mirroring image inspiration directly:
+  // Green body segments: #486A4D (primary-container variant)
+  // Green head: #31543A (primary-container)
+  // Food: #C45643 (secondary)
+  let snake = [
+    { x: 6, y: 8 }, // Head (facing right)
+    { x: 5, y: 8 }, // Mid
+    { x: 4, y: 8 }  // Tail
+  ];
+  let food = { x: 12, y: 11 };
+  let direction = { x: 1, y: 0 };
+  let nextDirection = { x: 1, y: 0 };
+  let gameState = 'playing'; // 'ready' | 'playing' | 'paused' | 'gameover'
+  let score = 1420;
+  let gameInterval = null;
+  let isMuted = false;
+
+  // Build the 18x18 Cell Matrix Elements
+  const cells = [];
+  function createGrid() {
+    boardGrid.innerHTML = '';
+    cells.length = 0;
+    for (let y = 0; y < GRID_SIZE; y++) {
+      for (let x = 0; x < GRID_SIZE; x++) {
+        const cell = document.createElement('div');
+        // Ivory unbleached paper cell styling
+        cell.className = 'w-full h-full rounded-[3px] bg-surface-bright transition-all duration-75 flex items-center justify-center relative';
+        boardGrid.appendChild(cell);
+        cells.push(cell);
+      }
+    }
+  }
+
+  function getCell(x, y) {
+    if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) return null;
+    return cells[y * GRID_SIZE + x];
+  }
+
+  function renderBoard() {
+    // Reset all cells to standard cardstock ivory
+    for (let i = 0; i < cells.length; i++) {
+      cells[i].className = 'w-full h-full rounded-[3px] bg-surface-bright transition-all duration-75 flex items-center justify-center relative shadow-[inset_0_1px_2px_rgba(32,37,31,0.03)]';
+      cells[i].innerHTML = '';
+    }
+
+    // Render Food pellet: rich terracotta tile matching image inspiration
+    const foodCell = getCell(food.x, food.y);
+    if (foodCell) {
+      foodCell.className = 'w-full h-full rounded-[4px] bg-secondary shadow-sm transition-transform scale-95 flex items-center justify-center';
+      // Subtle tactile inner bevel highlight
+      const innerBevel = document.createElement('div');
+      innerBevel.className = 'w-full h-full rounded-[4px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] pointer-events-none';
+      foodCell.appendChild(innerBevel);
+    }
+
+    // Render Snake Body segments
+    for (let i = 1; i < snake.length; i++) {
+      const seg = snake[i];
+      const cell = getCell(seg.x, seg.y);
+      if (cell) {
+        cell.className = 'w-full h-full rounded-[3px] bg-primary-container shadow-[0_1px_2px_rgba(32,37,31,0.18)] transition-all scale-95 flex items-center justify-center';
+        const innerBevel = document.createElement('div');
+        innerBevel.className = 'w-full h-full rounded-[3px] shadow-[inset_0_1px_0.5px_rgba(255,255,255,0.35)] pointer-events-none';
+        cell.appendChild(innerBevel);
+      }
+    }
+
+    // Render Snake Head with directional gaze
+    if (snake.length > 0) {
+      const head = snake[0];
+      const headCell = getCell(head.x, head.y);
+      if (headCell) {
+        headCell.className = 'w-full h-full rounded-[3.5px] bg-primary shadow-[0_1px_3px_rgba(32,37,31,0.25)] transition-all scale-[0.98] flex items-center justify-center relative';
+        
+        // Tactile eyes reflecting heading
+        const eyeA = document.createElement('span');
+        const eyeB = document.createElement('span');
+        eyeA.className = 'absolute w-1 h-1 rounded-full bg-inverse-primary/90';
+        eyeB.className = 'absolute w-1 h-1 rounded-full bg-inverse-primary/90';
+
+        if (direction.x === 1) {
+          eyeA.style.right = '2px'; eyeA.style.top = '3px';
+          eyeB.style.right = '2px'; eyeB.style.bottom = '3px';
+        } else if (direction.x === -1) {
+          eyeA.style.left = '2px'; eyeA.style.top = '3px';
+          eyeB.style.left = '2px'; eyeB.style.bottom = '3px';
+        } else if (direction.y === -1) {
+          eyeA.style.top = '2px'; eyeA.style.left = '3px';
+          eyeB.style.top = '2px'; eyeB.style.right = '3px';
+        } else {
+          eyeA.style.bottom = '2px'; eyeA.style.left = '3px';
+          eyeB.style.bottom = '2px'; eyeB.style.right = '3px';
+        }
+        headCell.appendChild(eyeA);
+        headCell.appendChild(eyeB);
+      }
+    }
+  }
+
+  function tick() {
+    if (gameState !== 'playing') return;
+
+    direction = nextDirection;
+    const newHead = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+    // Wall collision test
+    if (newHead.x < 0 || newHead.x >= GRID_SIZE || newHead.y < 0 || newHead.y >= GRID_SIZE) {
+      setGameState('gameover');
+      return;
+    }
+
+    // Self collision test
+    for (let i = 0; i < snake.length; i++) {
+      if (snake[i].x === newHead.x && snake[i].y === newHead.y) {
+        setGameState('gameover');
+        return;
+      }
+    }
+
+    snake.unshift(newHead);
+
+    // Food check
+    if (newHead.x === food.x && newHead.y === food.y) {
+      score += 100;
+      hudScore.textContent = score.toLocaleString();
+      let pCount = parseInt(pelletsVal.textContent, 10) + 1;
+      pelletsVal.textContent = pCount;
+      lengthVal.textContent = snake.length + ' SEG';
+      spawnFood();
+    } else {
+      snake.pop();
+    }
+
+    renderBoard();
+  }
+
+  function spawnFood() {
+    let emptyCells = [];
+    for (let y = 0; y < GRID_SIZE; y++) {
+      for (let x = 0; x < GRID_SIZE; x++) {
+        let occupied = false;
+        for (let i = 0; i < snake.length; i++) {
+          if (snake[i].x === x && snake[i].y === y) {
+            occupied = true;
+            break;
+          }
+        }
+        if (!occupied) emptyCells.push({ x, y });
+      }
+    }
+    if (emptyCells.length > 0) {
+      const idx = Math.floor(Math.random() * emptyCells.length);
+      food = emptyCells[idx];
+    }
+  }
+
+  function queueDirection(dx, dy) {
+    if (gameState !== 'playing') return;
+    // Prevent 180-degree instant reversal
+    if (snake.length > 1 && direction.x + dx === 0 && direction.y + dy === 0) return;
+    nextDirection = { x: dx, y: dy };
+  }
+
+  function setGameState(state) {
+    gameState = state;
+
+    // Update state pill highlight styles
+    document.querySelectorAll('.state-pill').forEach(pill => {
+      if (pill.dataset.state === state) {
+        pill.className = 'state-pill px-space-sm py-0.5 rounded font-label-md text-label-md bg-surface-container-lowest text-primary font-semibold shadow-sm';
+      } else {
+        pill.className = 'state-pill px-space-sm py-0.5 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors';
+      }
+    });
+
+    // Reset overlay visibility
+    boardOverlay.classList.add('opacity-0', 'pointer-events-none');
+    modalReady.classList.add('hidden');
+    modalPaused.classList.add('hidden');
+    modalGameOver.classList.add('hidden');
+
+    if (state === 'ready') {
+      hudStatus.textContent = 'READY / STANDBY';
+      boardOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      modalReady.classList.remove('hidden');
+    } else if (state === 'playing') {
+      hudStatus.textContent = 'LIVE SESSION';
+      document.getElementById('pause-icon').textContent = 'pause';
+    } else if (state === 'paused') {
+      hudStatus.textContent = 'SESSION HALTED';
+      boardOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      modalPaused.classList.remove('hidden');
+      document.getElementById('pause-icon').textContent = 'play_arrow';
+    } else if (state === 'gameover') {
+      hudStatus.textContent = 'TERMINATED';
+      boardOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      modalGameOver.classList.remove('hidden');
+    }
+  }
+
+  function togglePause() {
+    if (gameState === 'playing') {
+      setGameState('paused');
+    } else if (gameState === 'paused') {
+      setGameState('playing');
+    }
+  }
+
+  function restartRun() {
+    snake = [
+      { x: 6, y: 8 },
+      { x: 5, y: 8 },
+      { x: 4, y: 8 }
+    ];
+    food = { x: 12, y: 11 };
+    direction = { x: 1, y: 0 };
+    nextDirection = { x: 1, y: 0 };
+    score = 0;
+    hudScore.textContent = '0';
+    pelletsVal.textContent = '0';
+    lengthVal.textContent = '3 SEG';
+    setGameState('playing');
+    renderBoard();
+  }
+
+  function toggleMute() {
+    isMuted = !isMuted;
+    document.getElementById('mute-icon').textContent = isMuted ? 'volume_off' : 'volume_up';
+  }
+
+  function updateVolume(val) {
+    document.getElementById('vol-display').textContent = val + '%';
+  }
+
+  // Physical Keyboard Bindings
+  window.addEventListener('keydown', (e) => {
+    switch (e.key) {
+      case 'ArrowUp':
+      case 'w':
+      case 'W':
+        queueDirection(0, -1);
+        e.preventDefault();
+        break;
+      case 'ArrowDown':
+      case 's':
+      case 'S':
+        queueDirection(0, 1);
+        e.preventDefault();
+        break;
+      case 'ArrowLeft':
+      case 'a':
+      case 'A':
+        queueDirection(-1, 0);
+        e.preventDefault();
+        break;
+      case 'ArrowRight':
+      case 'd':
+      case 'D':
+        queueDirection(1, 0);
+        e.preventDefault();
+        break;
+      case ' ':
+        togglePause();
+        e.preventDefault();
+        break;
+      case 'r':
+      case 'R':
+        restartRun();
+        e.preventDefault();
+        break;
+    }
+  });
+
+  // Initialize and run
+  createGrid();
+  renderBoard();
+  gameInterval = setInterval(tick, 160);
+</script></main><footer class="w-full bg-surface-container-low border-t border-outline-variant/50 py-space-sm text-on-surface-variant"><div class="w-full px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-sm"><div class="flex items-center gap-space-md font-label-md text-label-md"><span class="text-on-surface font-semibold">CONTROLS: [W][A][S][D] / ARROWS</span><span class="text-outline-variant">•</span><span>PAUSE: [SPACE]</span><span class="text-outline-variant">•</span><span>RESTART: [R]</span></div><div class="flex items-center gap-space-md font-label-md text-label-md text-outline"><span>CANVAS 2D ENGINE // PURE TACTILE BOARD</span><span class="text-outline-variant">•</span><span class="text-on-surface-variant">THEME: CARDSTOCK MATTE</span></div></div></footer></body></html>

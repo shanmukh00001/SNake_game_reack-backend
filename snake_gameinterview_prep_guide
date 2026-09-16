@@ -1,0 +1,453 @@
+# Snake Game Project: Complete Interview Preparation Guide
+
+This guide is designed specifically for your Snake Game project, analyzing the actual code files (`client/` and `server/`) and mapping out exactly how you should explain, present, defend, and discuss this project in a professional technical interview.
+
+---
+
+## 1. Project Understanding & Architecture
+
+### Exact Purpose of the Project
+A retro-themed, highly responsive web-based **Snake Game** that allows users to play as guests or log in using Google OAuth to preserve their score history, track their personal best, and rank on a global Top 3 players leaderboard.
+
+### Complete Architecture Diagram & Flow
+The application follows a classic **client-server decoupled architecture (SPA + REST API)**.
+
+```mermaid
+graph TD
+    subgraph Client [React SPA Frontend]
+        App[App.jsx] --> AuthProvider[AuthContext.jsx]
+        App --> Game[Game.jsx]
+        App --> Leaderboard[Leaderboard.jsx]
+        App --> Login[Login.jsx]
+        Game --> gameLogic[gameLogic.js]
+        Game --> API[api.js Interceptor]
+    end
+
+    subgraph Transport [Network Layer]
+        API -- "HTTP (JSON) + JWT" --> Express[Express.js Server]
+    end
+
+    subgraph Server [Node/Express Backend]
+        Express --> serverJS[server.js]
+        serverJS --> RateLimiter[rateLimiter.js Middleware]
+        serverJS --> AuthMiddleware[authMiddleware.js - protect]
+        serverJS --> Routes[Routes: authRoutes, scoreRoutes]
+        Routes --> Controllers[Controllers: authController, scoreController]
+        Controllers --> UserSchema[User.js Mongoose Model]
+    end
+
+    subgraph Database [Storage & External Services]
+        UserSchema --> MongoDB[MongoDB Atlas]
+        Controllers -- "Token Verification" --> GoogleOAuth[Google Identity Services]
+    end
+```
+
+### Complete Request & Data Flow
+Here is how data flows through the application from user action to the database and back:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant React as React Frontend
+    participant Express as Node/Express Server
+    participant Google as Google OAuth API
+    participant DB as MongoDB Atlas
+
+    %% Scenario A: OAuth Authentication
+    Note over User, DB: Authentication Flow (Google OAuth)
+    User->>React: Clicks "Sign in with Google"
+    React->>Google: Authenticates user via popup
+    Google-->>React: Returns Credential (JWT ID Token)
+    React->>Express: POST /api/auth/google { token: idToken }
+    Express->>Google: Verifies ID Token using google-auth-library
+    Google-->>Express: Returns user payload (email, name, picture)
+    Express->>DB: User.findOne({ email })
+    alt User is new
+        Express->>DB: User.create({ email, name, picture })
+    else User exists
+        Express->>DB: Update user profile photo & name (overwrites custom names)
+    end
+    DB-->>Express: Confirms save/update
+    Express-->>React: Returns JWT Session Token + User Data (highScore, nameChangeCount)
+    React->>React: Saves token to localStorage & updates AuthContext state
+
+    %% Scenario B: Game Play & Score Submission
+    Note over User, DB: Score Submission Flow
+    User->>React: Collides snake with wall/body (Game Over)
+    React->>React: Detects gameover state
+    React->>Express: POST /api/score { score: finalScore } (Headers: Authorization: Bearer JWT)
+    Express->>Express: authMiddleware verifies JWT and extracts userId
+    Express->>Express: rateLimiter.js verifies score submissions <= 5 per min
+    Express->>DB: User.findById(userId)
+    DB-->>Express: Returns user document
+    alt finalScore > user.highScore
+        Express->>DB: user.highScore = finalScore; user.save()
+    end
+    DB-->>Express: Confirms database write
+    Express-->>React: Returns JSON { message: "Score updated", highScore }
+    React->>React: Merges highScore into AuthContext & updates localStorage
+    React->>React: Re-fetches /api/leaderboard and updates Leaderboard UI
+```
+
+### Connected Files & Components Matrix
+*   **`client/src/main.jsx`**: Bootstraps the React client. Wraps the app in `<GoogleOAuthProvider>` and `<AuthProvider>`.
+*   **`client/src/context/AuthContext.jsx`**: Provides session state (`user`, `token`). Synchronizes authenticated sessions on page refresh by calling `/api/auth/me` and provides guest-mode initialization.
+*   **`client/src/services/api.js`**: Centralized Axios instance. Normalizes API endpoints to terminate in `/api/` and intercepts outgoing requests to inject the `Authorization: Bearer <token>` header dynamically.
+*   **`client/src/App.jsx`**: The root layout coordinator. Controls rendering between `Login` or `Game` and manages the name change overlay.
+*   **`client/src/pages/Game.jsx`**: Maintains the game loop timer. Translates arrow keys and screen buttons into coordinate changes, maps game ticks to state steps, draws the grid layout, and dispatches high scores to `/api/score`.
+*   **`client/src/gameLogic.js`**: Contains pure, stateless functions for snake step math, opposite direction filtering, and random empty-cell food spawning.
+*   **`client/src/components/Leaderboard.jsx`**: Sidebar component fetching and listing the top 3 ranking users. Includes a manual refresh feature.
+*   **`server/server.js`**: Core entry point. Loads envs, connects to MongoDB, sets up Helmet security headers, configures CORS, binds rate limiters, mounts routes, and registers the error handlers.
+*   **`server/middleware/rateLimiter.js`**: Contains Express-Rate-Limit and Express-Slow-Down configurations (global limiters, scoring throttle, guest speedbumps).
+*   **`server/middleware/authMiddleware.js`**: Validates JWTs, extracts the payload, and attaches the active Mongoose user document to `req.user`.
+*   **`server/middleware/errorMiddleware.js`**: Catch-all for 404s and global server exception parsing.
+*   **`server/models/User.js`**: Single Mongoose database schema mapping user information (`email`, `name`, `picture`, `provider`, `highScore`, `nameChangeCount`).
+*   **`server/controllers/authController.js`**: Executes Google ID token exchange, generates local session JWTs, syncs credentials, and controls the one-time display name edit.
+*   **`server/controllers/scoreController.js`**: Handles score updates and leaderboard generation.
+
+---
+
+## 2. Technical Decisions & Analysis
+
+### 1. React State & Grid Rendering vs. HTML Canvas API
+*   **What it is**: The game board is built of pure HTML `div` elements mapped from an array of cells (`16x16 = 256 cells`). Game state updates trigger a complete React re-render of these grid nodes.
+*   **Why used**: For a retro 16x16 grid, rendering DOM elements is simple to write, highly responsive, and maps directly to React's declarative style.
+*   **Why instead of alternatives (like Canvas)**: Canvas API is stateless and requires manual rendering context clears, image draws, and pixel offsets on a screen pixel map. With 256 cells, React's virtual DOM diffing is incredibly fast and operates well within the 60fps budget.
+*   **Limitations & Trade-offs**: Scaling the grid to larger sizes (e.g., `100x100 = 10,000 cells`) causes severe rendering lag. Each tick would force React to reconcile 10,000 DOM elements. Canvas would perform much better for complex sprites or massive grids.
+
+### 2. Pure Game Loop Separation (`gameLogic.js`)
+*   **What it is**: Separation of the game physics (direction validation, wall checks, growth) into pure, stateless functions that do not interact with React's component state.
+*   **Why used**: Keeping state-mutating functions pure makes them deterministic and incredibly easy to unit test.
+*   **How implemented**: The game loop in `Game.jsx` calls `stepGame(state, direction)` inside a `setInterval`. It passes the current state and requested direction and receives the *next* state, updating the component state in a single step.
+*   **Problem solved**: Eliminates state synchronization issues and prevents rendering inconsistencies caused by multiple asynchronous keyboard input triggers.
+
+### 3. Stateless JWT + Google Identity Authentication
+*   **What it is**: User authentication relies entirely on Google OAuth client tokens, verified by the backend to issue a signed JSON Web Token (JWT) with a 7-day expiration.
+*   **Why used**: Eliminates the overhead of password hashing, password reset features, email verifications, and database session tables, offloading user validation to Google.
+*   **How implemented**: 
+    1. React client uses `@react-oauth/google` to receive a Google ID token.
+    2. Server verifies the signature using `google-auth-library` and returns a JWT.
+    3. Axios interceptor injects the JWT on subsequent calls.
+    4. Express middleware `protect` parses `Authorization: Bearer <token>` and verifies it using `jsonwebtoken`.
+*   **Limitations & Trade-offs**: Inability to revoke a token before it expires (unless you build a blacklisting system using Redis). If the JWT is stolen via Cross-Site Scripting (XSS) from `localStorage`, the hacker has access for 7 days.
+
+### 4. Layered Rate Limiting and Speed Bumps (Express Slow Down)
+*   **What it is**: Implementing two layers of defense using `express-rate-limit` (hard limits) and `express-slow-down` (soft delays or "speed bumps").
+*   **Why used**: Protects the server from DDoS attacks, API scripting bots, and high-frequency score submission spam.
+*   **How implemented**: The global `/api` route has `apiLimiter` (100 requests/hr in production) and `apiSlowDown` (adds 500ms delay to every request after the 50th within a 15-minute window). `/api/score` has a strict `scoreLimiter` (5 submissions/min).
+*   **Why chose instead of alternatives**: Standard rate limiters immediately block users with a 429 error. Combining them with speed bumps degrades performance for suspicious bots while still keeping the site functional for normal users experiencing network issues.
+
+---
+
+## 3. Key Findings, Bugs & Architectural Trade-offs
+
+Here are the real, non-generic details that show you *actually* built and analyzed this specific codebase:
+
+### 🚨 Critical Logic Bug: Custom Name Overwritten on Google Login
+In `authController.js` (lines 48-50), when an existing user logs in via Google, the controller executes this block:
+```javascript
+} else {
+  // Update profile data in case it changed
+  user.name = name;
+  user.picture = picture;
+  await user.save();
+  logger.info(`Existing user logged in via Google OAuth: ${email}`);
+}
+```
+**The Problem**: The user is allowed to update their display name *once* using the `PUT /api/auth/update-name` route. However, the next time they log in using Google OAuth, their custom name is overwritten back to the Google account name!
+**How to defend it in an interview**: 
+> "I discovered a synchronization bug between Google OAuth and the custom user profile. Although the system allows a one-time display name edit, subsequent Google logins overwrite it. In a production version, I would modify the login logic to only update the user's name if `nameChangeCount` is 0, preserving their custom display name."
+
+### ⚠️ Security Issue: Unused Security Middlewares
+In `server.js` (lines 6-8), you import security packages:
+```javascript
+import mongoSanitize from "express-mongo-sanitize";
+import xss from "xss-clean";
+import hpp from "hpp";
+import morgan from "morgan";
+```
+However, **none of these middlewares are actually mounted using `app.use()`!**
+**The Problem**: The app has dependencies installed but does not benefit from:
+*   `mongoSanitize`: Prevention of MongoDB Query Injection.
+*   `xss-clean`: Prevention of Cross-Site Scripting input vectors.
+*   `hpp`: Prevention of HTTP Parameter Pollution.
+*   `morgan`: Standard HTTP request logging (Winston is used instead).
+**How to defend it**: Acknowledge it as an initialization check you made during development that you are refactoring for production.
+
+### ⚠️ Performance Bottleneck: Leaderboard Query
+In `scoreController.js` (lines 31-34):
+```javascript
+const users = await User.find({})
+  .sort({ highScore: -1 })
+  .limit(3)
+  .lean();
+```
+**The Problem**: There is no index defined on `highScore` in `User.js`. When querying the top 3 users, MongoDB has to perform a full collection scan (scanning every single user in the database) and perform an in-memory sort. With 10,000+ users, this will severely slow down the database.
+**How to improve it**: Add an index to the schema: `userSchema.index({ highScore: -1 });`.
+
+---
+
+## 4. How to Present the Project (Order of Explanation)
+
+Follow this structure during your interview:
+
+```mermaid
+graph LR
+    A[1. The Problem] --> B[2. The Solution]
+    B --> C[3. Core Features]
+    C --> D[4. Tech Architecture]
+    D --> E[5. Challenges & Bugs]
+    E --> F[6. Future Scope]
+```
+
+1.  **The Problem**: Building a simple retro game is easy, but making it secure against fake score submissions, adding persistent leaderboards without managing local credentials (passwords), and ensuring the game state calculations run smoothly on a timer loop can be challenging.
+2.  **The Solution**: A MERN-based Snake Game with Google OAuth 2.0. High scores are synchronized via a secure Node.js backend to MongoDB, protected by JWT validation, custom rate-limiting rules, and speed bumps.
+3.  **Core Features**: Guest mode, secure Google authentication, a Top 3 player leaderboard, responsive game controls (supporting arrow keys and click buttons), and a one-time profile name change.
+4.  **Tech Architecture**: Walk through the React-Express-MongoDB flow. Explain the role of the Axios interceptor and Express middlewares.
+5.  **Challenges & Bugs**: Bring up the Google login name-overwrite bug and the missing security middleware. Discussing these shows maturity, self-awareness, and real debugging experience.
+6.  **Future Scope**: Mention adding a MongoDB index to high scores, implementing Redis for caching leaderboards, and moving the game board from React state elements to HTML5 Canvas for performance.
+
+---
+
+## 5. Deeper Code Walkthroughs
+
+### Deep Dive 1: Pure Game Step Calculation (`client/src/gameLogic.js`)
+This is the core physics engine of your Snake Game:
+```javascript
+export function stepGame(state, requestedDirection, randomFn = Math.random) {
+  if (state.status !== "running") {
+    return state;
+  }
+
+  const direction = getNextDirection(state.direction, requestedDirection);
+  const head = state.snake[0];
+  const delta = DIRECTIONS[direction];
+  const nextHead = {
+    x: head.x + delta.x,
+    y: head.y + delta.y,
+  };
+
+  const hitsWall =
+    nextHead.x < 0 ||
+    nextHead.x >= GRID_SIZE ||
+    nextHead.y < 0 ||
+    nextHead.y >= GRID_SIZE;
+
+  if (hitsWall) {
+    return {
+      ...state,
+      direction,
+      status: "gameover",
+    };
+  }
+
+  const willGrow =
+    state.food &&
+    nextHead.x === state.food.x &&
+    nextHead.y === state.food.y;
+
+  const bodyToCheck = willGrow ? state.snake : state.snake.slice(0, -1);
+  const hitsSelf = bodyToCheck.some(
+    (segment) => segment.x === nextHead.x && segment.y === nextHead.y,
+  );
+
+  if (hitsSelf) {
+    return {
+      ...state,
+      direction,
+      status: "gameover",
+    };
+  }
+
+  const nextSnake = [nextHead, ...state.snake];
+  if (!willGrow) {
+    nextSnake.pop();
+  }
+
+  const nextFood = willGrow ? placeFood(nextSnake, randomFn) : state.food;
+  const nextStatus = willGrow && nextFood === null ? "won" : "running";
+
+  return {
+    snake: nextSnake,
+    direction,
+    food: nextFood,
+    score: state.score + (willGrow ? 10 : 0),
+    status: nextStatus,
+  };
+}
+```
+
+#### Line-by-Line Explanation
+1.  **Lines 73–75**: Checks if the game is actually running. If not, it skips calculations and immediately returns the current state unchanged.
+2.  **Line 77**: Resolves the next direction. `getNextDirection` prevents the snake from moving directly backward into itself (e.g., trying to move `LEFT` while going `RIGHT`).
+3.  **Lines 78–83**: Computes the coordinates of the new head segment by adding the direction delta values (`x` and `y`) to the current head coordinates.
+4.  **Lines 85–97**: Wall-collision check. If the next head is outside the 16x16 grid bounds, it sets the game status to `gameover` and returns the state.
+5.  **Lines 99–102**: Checks if the next head's coordinates match the food coordinates. If they do, `willGrow` is set to `true`.
+6.  **Lines 104–115**: Self-collision check.
+    *   **Crucial detail**: If the snake is *not* growing, the tail will move forward. This means the head can safely move into the tail's current cell. We check `state.snake.slice(0, -1)` (all segments except the tail).
+    *   If the snake *is* growing, the tail remains in place. We check the full snake body.
+    *   If the new head hits any part of the body being checked, the game ends.
+7.  **Lines 117–120**: Updates the snake body. It adds `nextHead` to the beginning of the array. If the snake did not eat food, it pops the tail element off the end.
+8.  **Line 122**: Spawns new food on an empty grid cell if food was eaten.
+9.  **Line 123**: Win condition. If the snake fills the entire board (no empty cells left for food), the game status is set to `won`.
+10. **Lines 125–131**: Returns the updated state object, incrementing the score by 10 points if food was eaten.
+
+---
+
+### Deep Dive 2: Google Token Verification and User Setup (`server/controllers/authController.js`)
+This controller manages authentication and sessions:
+```javascript
+export const googleAuth = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ message: "Google token is required" });
+    }
+
+    // Verify Google ID Token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
+
+    // Find or create user
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        email,
+        name,
+        picture,
+        provider: "google",
+      });
+      logger.info(`New user created via Google OAuth: ${email}`);
+    } else {
+      // Update profile data in case it changed
+      user.name = name;
+      user.picture = picture;
+      await user.save();
+      logger.info(`Existing user logged in via Google OAuth: ${email}`);
+    }
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      picture: user.picture,
+      highScore: user.highScore,
+      nameChangeCount: user.nameChangeCount,
+      token: generateToken(user._id),
+    });
+  } catch (error) {
+    logger.error(`Google OAuth login failed: ${error.message}`);
+    res.status(401).json({ message: "Invalid Google token" });
+  }
+};
+```
+
+#### Line-by-Line Explanation
+1.  **Line 20**: Destructures the Google ID Token from the request body.
+2.  **Lines 27–30**: Calls the Google Auth library's `verifyIdToken`. This verifies that the token signature is valid, was generated by Google, and was created for our specific `GOOGLE_CLIENT_ID`.
+3.  **Lines 32–33**: Extracts user information (email, profile name, profile image URL) from the verified token payload.
+4.  **Line 36**: Queries MongoDB for an existing user matching the extracted email.
+5.  **Lines 38–44**: If the user is new, it creates a new `User` document in MongoDB.
+6.  **Lines 46–52**: If the user already exists, it updates their name and profile picture in the database.
+7.  **Lines 54–62**: Generates a signed JWT containing the user ID (expiring in 7 days) and sends it back to the client along with the user profile details.
+
+---
+
+## 6. Interview Preparation: Verbal Explanations
+
+Here are natural, conversational responses you can use in an interview:
+
+### 30-Second Elevator Pitch
+> "I built a modern web-based Snake Game using React, Node.js, Express, and MongoDB. The application features a real-time Top 3 leaderboard, guest mode, and a secure Google OAuth integration. Authenticated users can save their scores to the database and track their personal best. The backend is protected by custom JWT authorization, security headers, and rate-limiting rules to prevent api abuse."
+
+### 1-Minute Explanation
+> "I developed a full-stack retro Snake Game that combines simple gameplay with robust backend services. The frontend is a React single-page application using Vite, which communicates with a Node/Express REST API. For user authentication, I used Google Identity Services. The frontend passes a Google token to the backend, which verifies it using Google's client library and returns a JWT session token. High scores are saved to MongoDB, and a global leaderboard is fetched dynamically. I paid close attention to API security by setting up security headers using Helmet, configuring CORS, and adding custom rate limits and speed bumps to prevent bots from spamming the score submission endpoints."
+
+### 2-Minute Explanation
+> "I wanted to build a simple game project but implement it with high-quality backend patterns. I chose a classic retro Snake game. 
+> On the frontend, I used React with a grid-based rendering layout. Instead of Canvas, I represented the board as 256 HTML cells. The game physics is handled by a set of pure, stateless functions, making it clean and easy to test. 
+> The backend is built with Express and MongoDB. To keep authentication simple and secure, I used Google OAuth. When a user logs in, the backend verifies the Google token, identifies the user, and signs a JWT that is sent back to the client. Subsequent requests use an Axios interceptor to automatically attach this JWT to the headers.
+> One highlight of the project is how I secured the endpoints. Since game scores are public, they are vulnerable to scripting abuse. I implemented rate limiting using `express-rate-limit` to restrict score submissions to 5 per minute. I also added `express-slow-down` as a speed bump, adding a delay to suspicious traffic instead of blocking users outright. I also built a feature that allows users to edit their display name once, which is protected on the server to prevent bypasses."
+
+---
+
+## 7. Mock Interview Follow-up Questions
+
+### Q1: Why did you choose Google OAuth instead of building email/password authentication?
+*   **What they are testing**: Technical judgment, security awareness, and scope control.
+*   **Your Answer**: 
+    > "I chose Google OAuth because managing passwords securely is difficult and requires hashing (like bcrypt), email verification flows, password reset pages, and token management. Offloading this to Google makes the login flow seamless for players while ensuring enterprise-level security. It also allowed me to focus on building the game logic and securing the score submission endpoints."
+*   **Deeper Follow-up**: "How does your backend know the token sent by the client actually belongs to that user and isn't fake?"
+*   **Ideal Answer**: 
+    > "We never trust the token from the client blindly. The frontend sends the Google credential (ID Token) to our `/api/auth/google` endpoint. The server uses Google's `OAuth2Client.verifyIdToken()` to verify Google's signature and confirm the token was intended for our specific Google Client ID. Only then do we extract the email address and issue our own local JWT session token."
+
+### Q2: What is the benefit of using `express-slow-down` in addition to `express-rate-limit`?
+*   **What they are testing**: Understanding of rate-limiting strategies and user experience considerations.
+*   **Your Answer**: 
+    > "Standard rate limiting blocks requests with a 429 status code once a limit is reached. While this works, it can create a poor user experience for legitimate users during sudden traffic spikes. `express-slow-down` acts as a soft limiter or 'speed bump'. It allows a certain number of requests (e.g., 50) and then introduces a progressive delay (e.g., 500ms) to subsequent requests. This slows down bots and scrapers, making their attacks ineffective, while allowing real users to continue using the application."
+
+### Q3: I noticed you imported `mongoSanitize` and `xss-clean` in `server.js` but didn't mount them. What security risks does this create, and how would you fix them?
+*   **What they are testing**: Code review capability, security knowledge (NoSQL injection, XSS), and honesty.
+*   **Your Answer**: 
+    > "Yes, that is an integration gap in the codebase. Those packages are imported but not registered as middleware using `app.use()`. 
+    > Without `mongoSanitize`, the application is vulnerable to NoSQL injection attacks where malicious users send objects with MongoDB query operators (like `{"$gt": ""}`) in the request body, which could bypass auth checks. 
+    > Without `xss-clean`, input fields like the custom display name change are not sanitized for raw HTML or script tags, leaving the app open to Cross-Site Scripting (XSS) attacks. 
+    > To fix this, I would add `app.use(mongoSanitize())` and `app.use(xss())` right after mounting `express.json()` in `server.js`."
+
+---
+
+## 8. Performance & Scalability Challenges
+
+What happens if traffic scales up?
+
+| Target Traffic | What Will Break | Architectural Solution |
+| :--- | :--- | :--- |
+| **100 Active Users** | Nothing. The server easily handles this load. | Current architecture is sufficient. |
+| **10,000 Active Users** | 1. **MongoDB Collection Scans**: Sorting high scores for the leaderboard without an index will slow down the database.<br>2. **Event Loop Throttling**: Express logging request times and saving scores to disk via Winston console logging will slow down the event loop. | 1. Add a MongoDB index to the high score field: `{ highScore: -1 }`.<br>2. Turn off console log colors and format Winston logs as JSON for faster execution. |
+| **1,000,000 Active Users** | 1. **Leaderboard Bottleneck**: Fetching the leaderboard from MongoDB on every request will cause database CPU usage to hit 100%.<br>2. **JWT Storage (XSS)**: LocalStorage is vulnerable to XSS attacks, which could expose session tokens at scale. | 1. Move the leaderboard to **Redis** using a Sorted Set (`ZADD` / `ZREVRANGE`). This turns $O(N)$ database sorts into $O(\log N)$ in-memory lookups.<br>2. Move JWT tokens to secure, `httpOnly` cookies to protect them from XSS. |
+
+---
+
+## 9. Last-Minute Revision Sheet
+
+### Core Tech Stack
+*   **Frontend**: React (Vite), Axios, `@react-oauth/google`
+*   **Backend**: Node.js, Express.js
+*   **Database**: MongoDB Atlas (Mongoose)
+
+### 5 Critical Concepts to Remember
+1.  **Pure Game Loop**: Separation of concern between the timer interval state (`Game.jsx`) and the math calculations (`gameLogic.js`).
+2.  **Stateless Session**: Token verification via JWT instead of database session records.
+3.  **Axios Interceptor**: Automatically attaches the Bearer token header to outgoing API requests.
+4.  **Layered Throttling**: Using both hard rate limits and progressive delays to protect the server from spam.
+5.  **Google Token Exchange**: Server-side verification of Google signatures using `google-auth-library` before generating local sessions.
+
+### Top 5 Interviewer Warning Signs
+1.  **Unused Imports**: Middleware like `hpp` and `xss-clean` are imported but never initialized.
+2.  **Display Name Bug**: Subsequent Google logins overwrite custom display name edits.
+3.  **No High Score Index**: MongoDB performs collection scans when sorting the leaderboard.
+4.  **CORS Echo In Development**: `origin: true` allows any domain to make requests to the API during development, which is insecure for production.
+5.  **LocalStorage JWT**: Storing the session token in `localStorage` makes it vulnerable to XSS.
+
+---
+
+## 10. Resume Bullet Points
+
+### Project Title
+**Full-Stack Retro Snake Game & Score System**
+
+### Tech Stack
+React, Node.js, Express.js, MongoDB, JWT, Google OAuth 2.0, Mongoose, Axios
+
+### Resume Bullets
+*   Developed a responsive full-stack Snake Game using **React** and **Express.js**, implementing a stateless authentication flow by integrating **Google OAuth 2.0** and **JWT** session handling.
+*   Designed and built a secure REST API with custom **express-rate-limit** and **express-slow-down** middleware, preventing score submission abuse and DDoS attacks.
+*   Optimized application performance by separating the game physics into pure, stateless logic functions, keeping rendering updates lightweight and responsive.

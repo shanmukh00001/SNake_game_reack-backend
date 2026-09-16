@@ -1,5 +1,27 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import API from "../services/api";
+import API from "../services/api.js";
+
+/**
+ * @typedef {Object} UserProfile
+ * @property {string} [_id]
+ * @property {string} [name]
+ * @property {string} [email]
+ * @property {string} [picture]
+ * @property {number} [highScore]
+ * @property {number} [nameChangeCount]
+ * @property {string} [token]
+ * @property {boolean} [isGuest]
+ */
+
+/**
+ * @typedef {Object} AuthContextType
+ * @property {UserProfile|null} user
+ * @property {string|null} token
+ * @property {(data: UserProfile) => void} login
+ * @property {() => void} loginAsGuest
+ * @property {() => void} logout
+ * @property {(newData: Partial<UserProfile>) => void} updateUser
+ */
 
 export const AuthContext = createContext(null);
 
@@ -7,24 +29,24 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
-  // Initialize from localStorage on mount (preserves session across refresh)
   useEffect(() => {
-    const syncUser = async (token) => {
+    const syncUser = async (authToken) => {
       try {
         const { data } = await API.get("auth/me");
-        // Maintain the token in the user object
-        updateUser({ ...data, token });
+        updateUser({ ...data, token: authToken });
       } catch (err) {
         console.error("Failed to sync user data:", err);
       }
     };
 
     try {
-      const stored = JSON.parse(localStorage.getItem("user"));
+      const stored = JSON.parse(
+        localStorage.getItem("user") || "null"
+      );
       if (stored?.token || stored?.isGuest) {
         setUser(stored);
         setToken(stored.token || null);
-        
+
         if (stored.token) {
           syncUser(stored.token);
         }
@@ -34,14 +56,12 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // Login: stores to localStorage (same format as before) and updates state
   const login = (data) => {
     localStorage.setItem("user", JSON.stringify(data));
     setUser(data);
-    setToken(data.token);
+    setToken(data.token || null);
   };
 
-  // Login as Guest: persists a guest object in localStorage
   const loginAsGuest = () => {
     const guestData = { name: "Guest", isGuest: true };
     localStorage.setItem("user", JSON.stringify(guestData));
@@ -49,24 +69,24 @@ export function AuthProvider({ children }) {
     setToken(null);
   };
 
-  // Logout: clears storage and state
   const logout = () => {
     localStorage.removeItem("user");
     setUser(null);
     setToken(null);
   };
 
-  // Update user data (e.g. after name change)
   const updateUser = (newData) => {
-    setUser(prev => {
-      const updated = { ...prev, ...newData };
+    setUser((prev) => {
+      const updated = { ...(prev || {}), ...newData };
       localStorage.setItem("user", JSON.stringify(updated));
       return updated;
     });
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, loginAsGuest, logout, updateUser }}>
+    <AuthContext.Provider
+      value={{ user, token, login, loginAsGuest, logout, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -79,4 +99,3 @@ export function useAuth() {
   }
   return context;
 }
-
