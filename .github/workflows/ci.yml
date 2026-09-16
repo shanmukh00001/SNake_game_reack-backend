@@ -34,6 +34,11 @@ jobs:
 
   server-verification:
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -51,4 +56,8 @@ jobs:
 
       - name: Run Server Tests
         run: npm run test
+        env:
+          MONGO_URI: mongodb://127.0.0.1:27017/snakeDB_test
+          JWT_SECRET: ci_test_jwt_secret_token_12345
+          NODE_ENV: test
         working-directory: server

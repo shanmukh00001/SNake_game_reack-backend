@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { User } from "../models/User.js";
 import { GameSession } from "../models/GameSession.js";
 import { Score } from "../models/Score.js";
@@ -241,6 +242,10 @@ export const saveScore = async (req, res) => {
  */
 export const getLeaderboard = async (req, res) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.json([]);
+    }
+
     const limit = Math.min(
       50,
       Math.max(1, parseInt(req.query.limit, 10) || 10)
