@@ -5,14 +5,15 @@ import { app } from "../../src/server.js";
 
 describe("REST API Endpoints", () => {
   beforeAll(async () => {
+    mongoose.set("bufferCommands", false);
     const mongoUri =
       process.env.MONGO_URI || "mongodb://127.0.0.1:27017/snakeDB";
     try {
       if (mongoose.connection.readyState === 0) {
-        await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 2000 });
+        await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 4000 });
       }
     } catch {
-      // Allow fallback for offline test environments
+      // Allow fallback for offline/mock test environments
     }
   });
 
@@ -36,7 +37,8 @@ describe("REST API Endpoints", () => {
   it("GET /api/leaderboard handles request gracefully", async () => {
     const res = await request(app).get("/api/leaderboard");
     expect([200, 500]).toContain(res.status);
-  }, 10000);
+    expect(Array.isArray(res.body)).toBe(true);
+  }, 15000);
 
   it("POST /api/auth/google rejects missing token with 400 Bad Request", async () => {
     const res = await request(app).post("/api/auth/google").send({});

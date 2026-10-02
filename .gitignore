@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 .env
 .env.*
 !.env.example
@@ -7,6 +7,6 @@
 dist/
 coverage/
 cssredisgn/
-docs/
-README.md
 snake_gameinterview_prep_guide
+.cursor/
+

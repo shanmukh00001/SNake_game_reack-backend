@@ -254,9 +254,10 @@ export const getLeaderboard = async (req, res) => {
     const users = await User.find({ highScore: { $gt: 0 } })
       .sort({ highScore: -1, updatedAt: 1 })
       .limit(limit)
+      .maxTimeMS(3000)
       .lean();
 
-    const leaderboard = users.map((u, index) => {
+    const leaderboard = (users || []).map((u, index) => {
       const displayName =
         u.name || (u.email ? u.email.split("@")[0] : "Player");
       return {
